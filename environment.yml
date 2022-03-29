@@ -1,0 +1,9 @@
+name: mbta-analysis-dev
+channels:
+  - defaults
+dependencies:
+  - pandoc
+  - pip
+  - python
+  - pip:
+      - -e .[dev]
