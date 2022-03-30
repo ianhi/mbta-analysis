@@ -1,13 +1,15 @@
-__all__ = [
-    "load_month",
-]
-from pathlib import Path
-from typing import Union
+from __future__ import annotations
 
+__all__ = [
+    "load_months",
+]
+from os import PathLike
+
+import numpy as np
 import pandas as pd
 
 
-def load_month(fname: Union[str, Path]):
+def load_months(fnames: PathLike | list[PathLike]):
     """
     Load and process a month's csv - setting up approriate multiindex etc.
 
@@ -17,7 +19,7 @@ def load_month(fname: Union[str, Path]):
     will be the previous day, and the schedulded time will +1 day.
     that's where the 25.5 in the scheduled-chunked index come from
     """
-    df = pd.read_csv(fname)
+    df = pd.concat([pd.read_csv(f) for f in np.atleast_1d(fnames)])
     df["actual"] = pd.to_datetime(df["actual"])
     df["scheduled"] = pd.to_datetime(df["scheduled"])
     df["service_date"] = pd.to_datetime(df["service_date"])
