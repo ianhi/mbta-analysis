@@ -6,7 +6,7 @@ from ._util import direction_shorthand, to_min
 
 
 def travel_time(
-    df: pd.DataFrame, route: str | int, direction: str, start: str, end: str
+    df: pd.DataFrame, route: str | int, start: str, end: str, direction: str = None
 ):
     """
     Create a dataframe containing the actual travel times between two stops
@@ -16,12 +16,13 @@ def travel_time(
     df : DataFrame
     route : int or str
         The route number. For 1 digit routes it will be automatically prepended with 0s
-    direction : str
-        'Inbound' or 'Outbound', or shorthands 'in' or 'out'
     start : str
         The origin stop
     end : str
         The stop to end at
+    direction : str, optional
+        'Inbound' or 'Outbound', or shorthands 'in' or 'out'. If not given both
+        directions will be computed.
 
     Returns
     -------
@@ -29,8 +30,11 @@ def travel_time(
         A dataframe containing the time between the specified stops
     """
     route = str(route).zfill(2)
-    direction = direction_shorthand(direction)
-    fd = df.loc[route, direction]
+    if direction is not None:
+        direction = direction_shorthand(direction)
+        fd = df.loc[route, direction]
+    else:
+        fd = df.loc[route]
     fd = fd[(fd["time_point_id"] == start) | (fd["time_point_id"] == end)]
     return fd.groupby("half_trip_id")["actual"].diff().dropna()
 
