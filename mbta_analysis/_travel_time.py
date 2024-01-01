@@ -60,7 +60,7 @@ def plot_travel_times_by_chunked_departure(
     quantiles: tuple[float, float] = (0.25, 0.75),
     *,
     ax=None,
-    **kwargs
+    **kwargs,
 ):
     """
     Plot the median travel time vs the departure time (chunked)
